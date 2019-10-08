@@ -92,13 +92,12 @@
 
         activation: async args => {
             try {
-                const { activationToken } = args;
+                const { activationToken } = args.userInput;
                 const decodedToken = await AuthService.jwtVerify(
                     activationToken
                 );
                 if (decodedToken.type === 'activation') {
                     const user = await userModel.get({ _id: decodedToken._id });
-                    console.log('user', user);
                     if (!user) {
                         throw new Error(
                             JSON.stringify({
@@ -109,7 +108,7 @@
                     } else if (user.activationToken === activationToken) {
                         return await userModel.findOneAndUpdate(
                             { _id: user._id },
-                            { activationToken: '' }
+                            { activationToken: null }
                         );
                     } else {
                         throw new Error(

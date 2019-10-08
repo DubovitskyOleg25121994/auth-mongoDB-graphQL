@@ -44,14 +44,7 @@
         return new Promise((resolve, reject) => {
             jwt.verify(token, key || config.JWT_KEY, (err, decoded) => {
                 if (err) {
-                    reject(
-                        new Error(
-                            JSON.stringify({
-                                status: 400,
-                                type: 'JWT Verify Server Error'
-                            })
-                        )
-                    );
+                    reject(err);
                 } else {
                     resolve(decoded);
                 }

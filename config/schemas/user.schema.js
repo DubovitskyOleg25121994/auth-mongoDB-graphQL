@@ -6,9 +6,9 @@
     const { Schema } = mongoose;
 
     const UsersSchema = new Schema({
-        name            : { type: String, required: true },
-        email           : { type: String, required: true },
-        password        : { type: String, required: true },
+        name            : { type: String },
+        email           : { type: String },
+        password        : { type: String },
         role            : { type: String, default: 'user'},
         activationToken : String,
         date            : { type: Date, default: Date.now }

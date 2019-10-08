@@ -17,6 +17,24 @@
       email: String!
       password: String!
     }
+
+    input UserInputUpdate{
+      _id: ID!
+      name: String
+      email: String
+      password: String
+      activationToken: String
+    }
+
+    input UserActivationToken{
+     activationToken: String!
+    }
+
+    type getUser{
+      _id: ID!
+      name: String!
+      email: String!
+    }
     
     type AuthData {
       token: String!
@@ -31,9 +49,12 @@
     type RootQuery {
       login(email: String!, password: String!): AuthData!
       auth(_id:ID!):checkLogin
+      getUser(_id:ID!):getUser
     }
     type RootMutation {
       register(userInput: UserInput): User
+      updateUser(userInput: UserInputUpdate): User
+      activation(userInput: UserActivationToken): User
     }
     schema {
       query: RootQuery
