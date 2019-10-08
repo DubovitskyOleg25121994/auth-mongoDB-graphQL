@@ -1,21 +1,30 @@
 (() => {
     'use strict';
 
-    const userModel = require('../../models/user.model');
-    const AuthService = require('../../services/auth.service');
+    const userModel     = require('../../models/user.model');
+    const AuthService   = require('../../services/auth.service');
 
     module.exports = {
-        auth: async (req) => {
+        auth: async (args, req) => {
             try {
-                const { userId } = req.params;
-                const user = await userModel.findById({ userId });
-                res.status(200).send(user);
+                const { userId: isAuth  } = req;
+                const { _id } = args;
+                const user = await userModel.findById(_id);
+                if(!isAuth){
+                    throw new Error(
+                        JSON.stringify({
+                            status: 400,
+                            type: 'No token provided'
+                        })
+                    );
+                }
+                return user;
             } catch (err) {
                 return err;
             }
         },
 
-        register: async req => {
+        register: async args => {
             try {
                 const { password, email, name } = req.userInput;
                 console.log('req', req);
@@ -52,11 +61,10 @@
             }
         },
 
-        login: async req => {
+        login: async (args, req) => {
             try {
-                const { email, password } = req;
+                const { email, password } = args;
                 const user = await userModel.get({ email });
-                await AuthService.comparePassword(password, user);
                 if (!user) {
                     throw new Error(
                         JSON.stringify({
@@ -65,7 +73,7 @@
                         })
                     );
                 }
-
+                await AuthService.comparePassword(password, user);
                 if (!user.activationToken) {
                     console.log(
                         'AuthService.jwtCreate(user)',
@@ -81,13 +89,14 @@
                     );
                 }
             } catch (err) {
+                console.log('err', err);
                 return err;
             }
         },
 
-        activation: async req => {
+        activation: async args => {
             try {
-                const { activationToken } = req;
+                const { activationToken } = args;
                 const decodedToken = await AuthService.jwtVerify(
                     activationToken
                 );

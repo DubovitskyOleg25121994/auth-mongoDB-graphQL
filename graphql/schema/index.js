@@ -21,9 +21,16 @@
     type AuthData {
       token: String!
     }
+
+    type checkLogin {
+      _id:  ID!
+      name: String!
+      email: String!
+    }
     
     type RootQuery {
       login(email: String!, password: String!): AuthData!
+      auth(_id:ID!):checkLogin
     }
     type RootMutation {
       register(userInput: UserInput): User

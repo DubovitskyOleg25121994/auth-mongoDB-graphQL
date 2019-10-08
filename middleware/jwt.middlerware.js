@@ -1,27 +1,28 @@
 (() => {
-  const AuthService = require('../services/auth.service');
+    const AuthService = require('../services/auth.service');
 
-  exports.jwtCheck = async function (req, res, next) {
-    try {
-      if (req && req.headers && req.headers.authorization) {
-        const decodedToken = await AuthService.jwtVerify(
-          req.headers.authorization,
-        );
 
-        if (decodedToken.type === 'authorization') {
-          req.userId = decodedToken.id;
+    module.exports = jwtCheck = async function (req, res, next) {
+        try {
+            if (req && req.headers && req.headers.authorization) {
+                const decodedToken = await AuthService.jwtVerify(
+                    req.headers.authorization,
+                );
+                if (decodedToken.type === 'authorization') {
+                    // eslint-disable-next-line require-atomic-updates
+                    req.isAuth = true;
+                    // eslint-disable-next-line require-atomic-updates
+                    req.userId = decodedToken._id;
+                }
+                next();
+            } else {
+                req.isAuth = false;
+                next();
+            }
+        } catch (err) {
+            console.log('err', err);
         }
-        next();
-      } else {
-        throw new Error(
-          JSON.stringify({
-            status: 400,
-            type: 'No token provided',
-          }),
-        );
-      }
-    } catch (err) {
-      next(err);
-    }
-  };
+    };
+
+   
 })();

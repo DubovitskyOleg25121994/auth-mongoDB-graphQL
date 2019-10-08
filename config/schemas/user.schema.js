@@ -1,16 +1,20 @@
 (() => {
-  const mongoose = require('mongoose');
 
-  const { Schema } = mongoose;
+    'use strict';
+    const mongoose = require('mongoose');
 
-  const UsersSchema = new Schema({
-    name: String,
-    email: String,
-    password: String,
-    activationToken: String,
-  });
+    const { Schema } = mongoose;
 
-  const user = mongoose.model('user', UsersSchema);
+    const UsersSchema = new Schema({
+        name            : { type: String, required: true },
+        email           : { type: String, required: true },
+        password        : { type: String, required: true },
+        role            : { type: String, default: 'user'},
+        activationToken : String,
+        date            : { type: Date, default: Date.now }
+    });
 
-  module.exports = user;
+    const user = mongoose.model('user', UsersSchema);
+
+    module.exports = user;
 })();

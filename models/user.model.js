@@ -12,7 +12,7 @@
             });
         },
 
-        indById: id => {
+        findById: id => {
             return new Promise((resolve, reject) => {
                 user.findById(id, (err, user) => {
                     if (err) {

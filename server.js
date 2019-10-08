@@ -1,14 +1,16 @@
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const http = require('http');
-const mongoose = require('mongoose');
-const graphqlHttp = require('express-graphql');
-const graphQlSchema = require('./graphql/schema/index');
-const graphQlResolvers = require('./graphql/resolves/index');
+const express           = require('express');
+const app               = express();
+const bodyParser        = require('body-parser');
+const http              = require('http');
+const mongoose          = require('mongoose');
+const graphqlHttp       = require('express-graphql');
+const graphQlSchema     = require('./graphql/schema/index');
+const graphQlResolvers  = require('./graphql/resolves/index');
+const config            = require('./config/config');
+const jwtCheck          = require('./middleware/jwt.middlerware');
 
 
-const config = require('./config/config');
+app.use(jwtCheck);
 
 app.use(
     '/graphql',
@@ -76,13 +78,7 @@ mainDB.once('open', () => {
     console.info('CLIENT DB connected successfully');
 });
 
-app.use('/api', require('./middleware/jwt.middlerware').jwtCheck);
 
-// Routers
-// require('./routes/auth.route')(app);
-// require('./routes/user.route')(app);
-
-app.use(require('./middleware/error.middleware').handleError);
 
 const httpServer = http.createServer(app);
 
