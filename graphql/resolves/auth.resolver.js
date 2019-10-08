@@ -26,8 +26,7 @@
 
         register: async args => {
             try {
-                const { password, email, name } = req.userInput;
-                console.log('req', req);
+                const { password, email, name } = args.userInput;
                 const user = await userModel.get({ email });
                 if (user) {
                     throw new Error(
@@ -37,19 +36,16 @@
                         })
                     );
                 }
-
                 const hash = await AuthService.generateHash(password);
                 const data = {
                     name,
                     email,
                     password: hash
                 };
-
                 const newUser = await userModel.create(data);
                 const jwtCreate = await AuthService.jwtCreate(newUser, {
                     type: 'activation'
                 });
-
                 const result = await userModel.findOneAndUpdate(
                     { _id: jwtCreate.user._id },
                     { activationToken: jwtCreate.token }
@@ -61,7 +57,7 @@
             }
         },
 
-        login: async (args, req) => {
+        login: async args => {
             try {
                 const { email, password } = args;
                 const user = await userModel.get({ email });
