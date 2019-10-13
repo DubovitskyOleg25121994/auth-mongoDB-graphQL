@@ -1,16 +1,16 @@
 (() => {
     'use strict';
 
-    const userModel     = require('../../models/user.model');
-    const AuthService   = require('../../services/auth.service');
+    const userModel = require('../../models/user.model');
+    const AuthService = require('../../services/auth.service');
 
     module.exports = {
         auth: async (args, req) => {
             try {
-                const { userId: isAuth  } = req;
+                const { userId: isAuth } = req;
                 const { _id } = args;
                 const user = await userModel.findById(_id);
-                if(!isAuth){
+                if (!isAuth) {
                     throw new Error(
                         JSON.stringify({
                             status: 400,
@@ -23,7 +23,6 @@
                 return err;
             }
         },
-
         register: async args => {
             try {
                 const { password, email, name } = args.userInput;
@@ -97,7 +96,9 @@
                     activationToken
                 );
                 if (decodedToken.type === 'activation') {
-                    const user = await userModel.get({ _id: decodedToken._id });
+                    const user = await userModel.get({
+                        _id: decodedToken._id
+                    });
                     if (!user) {
                         throw new Error(
                             JSON.stringify({

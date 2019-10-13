@@ -1,12 +1,13 @@
 (() => {
+    'use strict';
+
     const AuthService = require('../services/auth.service');
 
-
-    module.exports = jwtCheck = async function (req, res, next) {
+    module.exports = async function(req, res, next) {
         try {
             if (req && req.headers && req.headers.authorization) {
                 const decodedToken = await AuthService.jwtVerify(
-                    req.headers.authorization,
+                    req.headers.authorization
                 );
                 if (decodedToken.type === 'authorization') {
                     // eslint-disable-next-line require-atomic-updates
@@ -23,6 +24,4 @@
             console.log('err', err);
         }
     };
-
-   
 })();
